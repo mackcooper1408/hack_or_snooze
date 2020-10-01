@@ -75,3 +75,32 @@ async function submitNewStory(evt){
 }
 
 $storyForm.on("submit", submitNewStory);
+
+function putOwnStoriesOnPage() {
+  console.debug("putOwnStoriesOnPage");
+
+  $allStoriesList.empty();
+
+  // loop through all of our stories and generate HTML for them
+  for (let story of currentUser.ownStories) {
+    const $story = generateStoryMarkup(story);
+    $allStoriesList.append($story);
+  }
+
+  $allStoriesList.show();
+}
+
+
+function putFavStoriesOnPage() {
+  console.debug("putFavStoriesOnPage");
+
+  $allStoriesList.empty();
+
+  // loop through all of our stories and generate HTML for them
+  for (let story of currentUser.favorites) {
+    const $story = generateStoryMarkup(story);
+    $allStoriesList.append($story);
+  }
+
+  $allStoriesList.show();
+}

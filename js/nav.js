@@ -12,6 +12,29 @@ function navAllStories(evt) {
 
 $body.on("click", "#nav-all", navAllStories);
 
+/** Show list of user account stories when click on my stories */
+
+function navMyStories(evt) {
+  console.debug("navMyStories", evt);
+  hidePageComponents();
+  
+  putOwnStoriesOnPage();
+}
+
+$navMyStories.on("click", navMyStories);
+
+/** show list of user account favorite stories when click on "favorites" */
+
+function navFavorites(evt) {
+  console.debug("navFavorites", evt);
+  hidePageComponents();
+
+  putFavStoriesOnPage();
+}
+
+$navFavorites.on("click", navFavorites);
+
+
 /** Show login/signup on click on "login" */
 
 function navLoginClick(evt) {
