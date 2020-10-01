@@ -4,6 +4,7 @@ const $body = $("body");
 
 const $storiesLoadingMsg = $("#stories-loading-msg");
 const $allStoriesList = $("#all-stories-list");
+const $starIcon = $(".fa-star");
 
 const $loginForm = $("#login-form");
 const $signupForm = $("#signup-form");
@@ -33,7 +34,6 @@ function hidePageComponents() {
 }
 
 /** Overall function to kick off the app. */
-
 async function start() {
   console.debug("start");
 
