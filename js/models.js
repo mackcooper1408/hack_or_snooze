@@ -71,8 +71,20 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  async addStory( /* user, newStory */) {
-    // UNIMPLEMENTED: complete this function!
+  static async addStory(user, newStory) {
+    const response = await axios({
+      url: `${BASE_URL}/stories`,
+      method: "POST",
+      data: {
+        token: user.loginToken,
+        story: newStory
+      }
+    });
+
+    const newUserStory = response.data;
+
+    console.log(newUserStory)
+    return new Story(newUserStory)
   }
 }
 
@@ -137,7 +149,17 @@ class User {
       data: { user: { username, password } },
     });
 
-    return new User(response.data.user, response.data.token);
+    let { user } = response.data;
+    console.log("Here's your token! ", response.data.token)
+    return new User(
+      {
+        username: user.username,
+        name: user.name,
+        createdAt: user.createdAt,
+        favorites: user.favorites,
+        ownStories: user.stories
+
+      }, response.data.token);
   }
 
   /** When we already have credentials (token & username) for a user,
@@ -151,7 +173,18 @@ class User {
         method: "GET",
         params: { token },
       });
-      return new User(response.data.user, token);
+
+      let { user } = response.data;
+
+      return new User(
+        {
+          username: user.username,
+          name: user.name,
+          createdAt: user.createdAt,
+          favorites: user.favorites,
+          ownStories: user.stories
+  
+        }, token);
     } catch (err) {
       console.error("loginViaStoredCredentials failed", err);
       return null;

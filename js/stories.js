@@ -48,3 +48,23 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+
+$storyForm.on("submit", function(evt){
+  evt.preventDefault();
+
+ let author = $("#author").val();
+ let title = $("#title").val();
+ let url = $("#story-url").val();
+
+  let newStory = {
+              author,
+              title,
+              url
+              };
+
+  console.log(currentUser, newStory);
+  StoryList.addStory(currentUser, newStory);
+
+  evt.target.reset();
+})
