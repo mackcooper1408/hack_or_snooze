@@ -49,22 +49,29 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
-
-$storyForm.on("submit", function(evt){
+async function submitNewStory(evt){
   evt.preventDefault();
-
- let author = $("#author").val();
- let title = $("#title").val();
- let url = $("#story-url").val();
-
+  
+  let author = $("#author").val();
+  let title = $("#title").val();
+  let url = $("#story-url").val();
+  
   let newStory = {
-              author,
-              title,
-              url
-              };
+    author,
+    title,
+    url
+  };
+  
+  await storyList.addStory(currentUser, newStory);
+  
+  console.log("current list of stories, ", storyList.stories);
+  console.debug("addStory");
 
-  console.log(currentUser, newStory);
-  StoryList.addStory(currentUser, newStory);
-
+  putStoriesOnPage();
+  
+  $storyForm.hide();
+  
   evt.target.reset();
-})
+}
+
+$storyForm.on("submit", submitNewStory);
