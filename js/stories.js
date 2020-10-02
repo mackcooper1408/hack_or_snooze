@@ -11,11 +11,6 @@ async function getAndShowStoriesOnStart() {
 
 }
 
-async function getAndShowStoriesOnFavNav() {
-
-  putFavStoriesOnPage();
-}
-
 /**
  * A render method to render HTML for an individual Story instance
  * - story: an instance of Story
@@ -29,8 +24,8 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
 
 
-  if (currentUser.favorites.some((obj) => { return obj.storyId === story.storyId })) {
-    console.log("This is in favorites! ", story.title);
+  if (currentUser.favorites.some((obj) =>  obj.storyId === story.storyId )) {
+    // console.log("This is in favorites! ", story.title);
     starFill = "fas";
   };
 
@@ -125,20 +120,20 @@ function putFavStoriesOnPage() {
 
 function toggleStoryFav(evt) {
   let $favIcon = $(evt.target);
-  console.log("fav star clicked!");
+  // console.log("fav star clicked!");
   $favIcon.toggleClass("fas");
 
   let favStoryId = $favIcon.parent().attr("id");
 
   if ($favIcon.hasClass("fas")) {
-    currentUser.addNewFavorite(currentUser.loginToken, currentUser.username, favStoryId);
+    currentUser.addNewFavorite(favStoryId);
     
   }
   else {
-    currentUser.deleteFavorite(currentUser.loginToken, currentUser.username, favStoryId);
+    currentUser.deleteFavorite(favStoryId);
   }
 }
 
-// https://hack-or-snooze-v3.herokuapp.com/users/hueter/favorites/32d336da-98cd-4010-bb39-1d789b9bef50
-
 $("#all-stories-list").on("click", ".fa-star", toggleStoryFav);
+
+// https://hack-or-snooze-v3.herokuapp.com/users/hueter/favorites/32d336da-98cd-4010-bb39-1d789b9bef50

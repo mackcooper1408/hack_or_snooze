@@ -83,8 +83,8 @@ class StoryList {
 
     const newUserStory = response.data.story;
     const storyInstance = new Story(newUserStory);
-    
-    storyList.stories.unshift(storyInstance);
+
+    this.stories.unshift(storyInstance);
 
     return storyInstance;
   }
@@ -102,13 +102,13 @@ class User {
    */
 
   constructor({
-                username,
-                name,
-                createdAt,
-                favorites = [],
-                ownStories = []
-              },
-              token) {
+    username,
+    name,
+    createdAt,
+    favorites = [],
+    ownStories = []
+  },
+    token) {
     this.username = username;
     this.name = name;
     this.createdAt = createdAt;
@@ -185,7 +185,7 @@ class User {
           createdAt: user.createdAt,
           favorites: user.favorites,
           ownStories: user.stories
-  
+
         }, token);
     } catch (err) {
       console.error("loginViaStoredCredentials failed", err);
@@ -193,44 +193,38 @@ class User {
     }
   }
 
-  async addNewFavorite(token, userName, storyId){
-    const response = await axios ({
-      url: `${BASE_URL}/users/${userName}/favorites/${storyId}`,
+  async addNewFavorite(storyId) {
+    const token = this.loginToken;
+    const response = await axios({
+      url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
       method: "POST",
       params: { token }
     });
-    if(currentUser){
 
-      currentUser.favorites = await this.getFavStories(token, userName);
-      console.log("Updated Curentuser favourites",currentUser.favorites);
-
-
-    }
+    this.favorites = await this.getFavStories();
   }
-    
-  async deleteFavorite(token, userName, storyId) {
-    const response = await axios ({
-      url: `${BASE_URL}/users/${userName}/favorites/${storyId}`,
+
+  async deleteFavorite(storyId) {
+    const token = this.loginToken;
+    const response = await axios({
+      url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
       method: "DELETE",
       params: { token }
     });
-    if(currentUser){
 
-    currentUser.favorites = await this.getFavStories(token, userName);
-    console.log("Updated Curentuser favourites",currentUser.favorites);
-
-    }
+    this.favorites = await this.getFavStories();
   }
 
-  async getFavStories(token, userName) {
-    const response = await axios ({
-      url: `${BASE_URL}/users/${userName}/`,
+  async getFavStories() {
+    const token = this.loginToken;
+    const response = await axios({
+      url: `${BASE_URL}/users/${this.username}/`,
       method: "GET",
       params: { token }
     });
     const favorites = response.data.user.favorites.map(story => new Story(story))
     // console.log("favorites: ", favorites);
-  
+
     return favorites;
   }
 }
