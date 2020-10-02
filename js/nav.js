@@ -64,12 +64,12 @@ function updateNavOnLogin() {
 }
 
 function navSubmitClick(evt){
+  currNavTab = "";
   console.debug("navSubmitClick", evt);
   hidePageComponents();
 
-  currNavTab = "";
   $storyForm.show();
-  $allStoriesList.show();
+  putStoriesOnPage();
 }
 
 $navSubmit.on("click", navSubmitClick);

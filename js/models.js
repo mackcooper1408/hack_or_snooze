@@ -29,7 +29,7 @@ class Story {
     if (hostname.includes("www")) {
       let urlSplit = hostname.split("www.")
       finalUrl = urlSplit[1];
-    } else {finalUrl = hostname}
+    } else { finalUrl = hostname }
     return finalUrl;
   }
 
@@ -137,13 +137,20 @@ class User {
    */
 
   static async signup(username, password, name) {
-    const response = await axios({
-      url: `${BASE_URL}/signup`,
-      method: "POST",
-      data: { user: { username, password, name } },
-    });
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/signup`,
+        method: "POST",
+        data: { user: { username, password, name } },
+      });
 
-    return new User(response.data.user, response.data.token);
+      return new User(response.data.user, response.data.token);
+    } catch (ex) {
+      const msg = ex.response.data.error.message;
+      alert(msg);
+      return null;
+    }
+
   }
 
   /** Login in user with API, make User instance & return it.
@@ -153,23 +160,31 @@ class User {
    */
 
   static async login(username, password) {
-    const response = await axios({
-      url: `${BASE_URL}/login`,
-      method: "POST",
-      data: { user: { username, password } },
-    });
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/login`,
+        method: "POST",
+        data: { user: { username, password } },
+      });
 
-    let { user } = response.data;
-    // updateUIOnUserLogin("Here's your token! ", response.data.token)
-    return new User(
-      {
-        username: user.username,
-        name: user.name,
-        createdAt: user.createdAt,
-        favorites: user.favorites,
-        ownStories: user.stories
+      let { user } = response.data;
+      return new User(
+        {
+          username: user.username,
+          name: user.name,
+          createdAt: user.createdAt,
+          favorites: user.favorites,
+          ownStories: user.stories
 
-      }, response.data.token);
+        }, response.data.token);
+
+    } catch (ex) {
+      const msg = ex.response.data.error.message;
+      alert(msg);
+      return null;
+    }
+
+
   }
 
   /** When we already have credentials (token & username) for a user,
@@ -231,7 +246,7 @@ class User {
       params: { token }
     });
     const favorites = response.data.user.favorites.map(story => new Story(story))
-  
+
     return favorites;
   }
 
@@ -244,4 +259,3 @@ class User {
     });
   }
 }
- 

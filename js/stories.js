@@ -143,6 +143,7 @@ function deleteStory(evt) {
 
   currentUser.deleteUserStory(storyId);
   currentUser.ownStories = currentUser.ownStories.filter((story) => story.storyId !== storyId);
+  currentUser.favorites = currentUser.favorites.filter((story) => story.storyId !== storyId);
   storyList.stories = storyList.stories.filter((story) => story.storyId !== storyId);
 
   putOwnStoriesOnPage();
