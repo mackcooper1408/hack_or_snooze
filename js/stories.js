@@ -23,8 +23,9 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
+      <i class="far fa-star"></i> 
         <a href="${story.url}" target="a_blank" class="story-link">
-        <i class="far fa-star"></i> ${story.title}
+       ${story.title}
         </a>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
@@ -49,28 +50,28 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
-async function submitNewStory(evt){
+async function submitNewStory(evt) {
   evt.preventDefault();
-  
+
   let author = $("#author").val();
   let title = $("#title").val();
   let url = $("#story-url").val();
-  
+
   let newStory = {
     author,
     title,
     url
   };
-  
+
   await storyList.addStory(currentUser, newStory);
-  
+
   console.log("current list of stories, ", storyList.stories);
   console.debug("addStory");
 
   putStoriesOnPage();
-  
+
   $storyForm.hide();
-  
+
   evt.target.reset();
 }
 
@@ -99,8 +100,33 @@ function putFavStoriesOnPage() {
   // loop through all of our stories and generate HTML for them
   for (let story of currentUser.favorites) {
     const $story = generateStoryMarkup(story);
+    let $starIcon = $story.children().first();
+    console.log($starIcon);
+
+    $starIcon.toggleClass("fas");
     $allStoriesList.append($story);
   }
 
   $allStoriesList.show();
 }
+
+
+function toggleStoryFav(evt) {
+  let $favIcon = $(evt.target);
+ console.log("fav star clicked!");
+  $favIcon.toggleClass("fas");
+
+  let favStoryId = $favIcon.parent().attr("id");
+
+  if ($favIcon.hasClass("fas")) {
+    currentUser.addNewFavorite(currentUser.loginToken, currentUser.username, favStoryId);
+  }
+  else {
+    currentUser.deleteFavorite(currentUser.loginToken, currentUser.username, favStoryId);
+  }
+}
+
+
+https://hack-or-snooze-v3.herokuapp.com/users/hueter/favorites/32d336da-98cd-4010-bb39-1d789b9bef50
+
+$("#all-stories-list").on("click", ".fa-star", toggleStoryFav);
