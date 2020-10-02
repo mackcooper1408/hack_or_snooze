@@ -19,26 +19,31 @@ async function getAndShowStoriesOnStart() {
  */
 
 function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
+  // console.debug("generateStoryMarkup");
   let starFill = "";
+  let deleteIcon = "";
   const hostName = story.getHostName();
 
 
-  if (currentUser.favorites.some((obj) =>  obj.storyId === story.storyId )) {
-    // console.log("This is in favorites! ", story.title);
+  if (currentUser && currentUser.favorites.some((obj) => obj.storyId === story.storyId)) {
     starFill = "fas";
+  };
+
+  if (currentUser && currentUser.ownStories.some((obj) => obj.storyId === story.storyId) && currNavTab === "myStories") {
+    deleteIcon = `<i class="fas fa-trash-alt"></i>`;
   };
 
 
   return $(`
       <li id="${story.storyId}">
-      <i class="far ${starFill} fa-star"></i> 
-        <a href="${story.url}" target="a_blank" class="story-link">
-       ${story.title}
-        </a>
-        <small class="story-hostname">(${hostName})</small>
-        <small class="story-author">by ${story.author}</small>
-        <small class="story-user">posted by ${story.username}</small>
+      ${deleteIcon}
+          <i class="far ${starFill} fa-star"></i> 
+            <a href="${story.url}" target="a_blank" class="story-link">
+          ${story.title}
+            </a>
+            <small class="story-hostname">(${hostName})</small>
+            <small class="story-author">by ${story.author}</small>
+            <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
 }
@@ -74,8 +79,7 @@ async function submitNewStory(evt) {
 
   await storyList.addStory(currentUser, newStory);
 
-  console.log("current list of stories, ", storyList.stories);
-  console.debug("addStory");
+  currNavTab = "";
 
   putStoriesOnPage();
 
@@ -107,8 +111,8 @@ function putFavStoriesOnPage() {
   $allStoriesList.empty();
 
   // loop through all of our stories and generate HTML for them
- 
-  for (let story of currentUser.favorites){ 
+
+  for (let story of currentUser.favorites) {
     const $story = generateStoryMarkup(story);
 
     $allStoriesList.append($story);
@@ -120,20 +124,31 @@ function putFavStoriesOnPage() {
 
 function toggleStoryFav(evt) {
   let $favIcon = $(evt.target);
-  // console.log("fav star clicked!");
   $favIcon.toggleClass("fas");
 
   let favStoryId = $favIcon.parent().attr("id");
 
   if ($favIcon.hasClass("fas")) {
     currentUser.addNewFavorite(favStoryId);
-    
+
   }
   else {
     currentUser.deleteFavorite(favStoryId);
   }
 }
 
+function deleteStory(evt) {
+  let $deleteIcon = $(evt.target);
+  let storyId = $deleteIcon.parent().attr("id");
+
+  currentUser.deleteUserStory(storyId);
+  currentUser.ownStories = currentUser.ownStories.filter((story) => story.storyId !== storyId);
+  storyList.stories = storyList.stories.filter((story) => story.storyId !== storyId);
+
+  putOwnStoriesOnPage();
+}
+
 $("#all-stories-list").on("click", ".fa-star", toggleStoryFav);
+$("#all-stories-list").on("click", ".fa-trash-alt", deleteStory);
 
 // https://hack-or-snooze-v3.herokuapp.com/users/hueter/favorites/32d336da-98cd-4010-bb39-1d789b9bef50

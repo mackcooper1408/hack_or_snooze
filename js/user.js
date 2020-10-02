@@ -20,7 +20,6 @@ async function login(evt) {
   currentUser = await User.login(username, password);
 
   $loginForm.trigger("reset");
-
   saveUserCredentialsInLocalStorage();
   updateUIOnUserLogin();
 }
@@ -43,7 +42,7 @@ async function signup(evt) {
 
   saveUserCredentialsInLocalStorage();
   updateUIOnUserLogin();
-
+  
   $signupForm.trigger("reset");
 }
 
@@ -108,6 +107,7 @@ function saveUserCredentialsInLocalStorage() {
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
 
+  console.log("current user",currentUser)
   $allStoriesList.show();
 
   updateNavOnLogin();

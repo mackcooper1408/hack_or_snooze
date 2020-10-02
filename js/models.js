@@ -23,8 +23,16 @@ class Story {
 
   getHostName() {
     // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    let url = new URL(this.url);
+    let hostname = url.hostname;
+    let finalUrl = ""
+    if (hostname.includes("www")) {
+      let urlSplit = hostname.split("www.")
+      finalUrl = urlSplit[1];
+    } else {finalUrl = hostname}
+    return finalUrl;
   }
+
 }
 
 
@@ -85,7 +93,7 @@ class StoryList {
     const storyInstance = new Story(newUserStory);
 
     this.stories.unshift(storyInstance);
-
+    user.ownStories.push(storyInstance);
     return storyInstance;
   }
 }
@@ -152,7 +160,7 @@ class User {
     });
 
     let { user } = response.data;
-    console.log("Here's your token! ", response.data.token)
+    // updateUIOnUserLogin("Here's your token! ", response.data.token)
     return new User(
       {
         username: user.username,
@@ -223,8 +231,17 @@ class User {
       params: { token }
     });
     const favorites = response.data.user.favorites.map(story => new Story(story))
-    // console.log("favorites: ", favorites);
-
+  
     return favorites;
   }
+
+  async deleteUserStory(storyId) {
+    const token = this.loginToken;
+    const response = await axios({
+      url: `${BASE_URL}/stories/${storyId}`,
+      method: "DELETE",
+      params: { token }
+    });
+  }
 }
+ 

@@ -4,9 +4,13 @@
 
 /** Show main list of all stories when click site name */
 
+
 function navAllStories(evt) {
   console.debug("navAllStories", evt);
   hidePageComponents();
+
+  currNavTab = "";
+
   putStoriesOnPage();
 }
 
@@ -17,7 +21,9 @@ $body.on("click", "#nav-all", navAllStories);
 function navMyStories(evt) {
   console.debug("navMyStories", evt);
   hidePageComponents();
-  
+
+  currNavTab = "myStories";
+
   putOwnStoriesOnPage();
 }
 
@@ -29,6 +35,7 @@ function navFavorites(evt) {
   console.debug("navFavorites", evt);
   hidePageComponents();
 
+  currNavTab = "";
   putFavStoriesOnPage();
 }
 
@@ -59,6 +66,8 @@ function updateNavOnLogin() {
 function navSubmitClick(evt){
   console.debug("navSubmitClick", evt);
   hidePageComponents();
+
+  currNavTab = "";
   $storyForm.show();
   $allStoriesList.show();
 }

@@ -18,6 +18,14 @@ const $navSubmit = $("#nav-submit");
 const $navFavorites = $("#nav-favorites");
 const $navMyStories = $("#nav-my-stories");
 
+// const NAV_TAB_NAMES = {
+//   OWN_STORIES, 
+//   FAV_STORIES,
+//   HOME,
+//   SUBMIT
+// }
+let currNavTab = '';
+
 /** To make it easier for individual components to show just themselves, this
  * is a useful function that hides pretty much everything on the page. After
  * calling this, individual components can re-show just what they want.
@@ -51,4 +59,5 @@ console.warn("HEY STUDENT: This program sends many debug messages to" +
   " the console. If you don't see the message 'start' below this, you're not" +
   " seeing those helpful debug messages. In your browser console, click on" +
   " menu 'Default Levels' and add Verbose");
+  
 $(start);
