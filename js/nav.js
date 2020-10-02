@@ -29,7 +29,7 @@ function navFavorites(evt) {
   console.debug("navFavorites", evt);
   hidePageComponents();
 
-  putFavStoriesOnPage();
+  getAndShowStoriesOnFavNav();
 }
 
 $navFavorites.on("click", navFavorites);

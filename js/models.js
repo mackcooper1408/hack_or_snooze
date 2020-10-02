@@ -194,13 +194,19 @@ class User {
   }
 
   async addNewFavorite(token, userName, storyId){
-      const response = await axios ({
-        url: `${BASE_URL}/users/${userName}/favorites/${storyId}`,
-        method: "POST",
-        params: { token }
-      });
-  
+    const response = await axios ({
+      url: `${BASE_URL}/users/${userName}/favorites/${storyId}`,
+      method: "POST",
+      params: { token }
+    });
+    if(currentUser){
+
+      currentUser.favorites = await this.getFavStories(token, userName);
+      console.log("Updated Curentuser favourites",currentUser.favorites);
+
+
     }
+  }
     
   async deleteFavorite(token, userName, storyId) {
     const response = await axios ({
@@ -208,5 +214,23 @@ class User {
       method: "DELETE",
       params: { token }
     });
+    if(currentUser){
+
+    currentUser.favorites = await this.getFavStories(token, userName);
+    console.log("Updated Curentuser favourites",currentUser.favorites);
+
+    }
+  }
+
+  async getFavStories(token, userName) {
+    const response = await axios ({
+      url: `${BASE_URL}/users/${userName}/`,
+      method: "GET",
+      params: { token }
+    });
+    const favorites = response.data.user.favorites.map(story => new Story(story))
+    // console.log("favorites: ", favorites);
+  
+    return favorites;
   }
 }

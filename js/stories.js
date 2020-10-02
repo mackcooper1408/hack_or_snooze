@@ -8,6 +8,12 @@ async function getAndShowStoriesOnStart() {
   $storiesLoadingMsg.remove();
 
   putStoriesOnPage();
+
+}
+
+async function getAndShowStoriesOnFavNav() {
+
+  putFavStoriesOnPage();
 }
 
 /**
@@ -19,11 +25,19 @@ async function getAndShowStoriesOnStart() {
 
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
-
+  let starFill = "";
   const hostName = story.getHostName();
+
+
+  if (currentUser.favorites.some((obj) => { return obj.storyId === story.storyId })) {
+    console.log("This is in favorites! ", story.title);
+    starFill = "fas";
+  };
+
+
   return $(`
       <li id="${story.storyId}">
-      <i class="far fa-star"></i> 
+      <i class="far ${starFill} fa-star"></i> 
         <a href="${story.url}" target="a_blank" class="story-link">
        ${story.title}
         </a>
@@ -98,12 +112,10 @@ function putFavStoriesOnPage() {
   $allStoriesList.empty();
 
   // loop through all of our stories and generate HTML for them
-  for (let story of currentUser.favorites) {
+ 
+  for (let story of currentUser.favorites){ 
     const $story = generateStoryMarkup(story);
-    let $starIcon = $story.children().first();
-    console.log($starIcon);
 
-    $starIcon.toggleClass("fas");
     $allStoriesList.append($story);
   }
 
@@ -113,20 +125,20 @@ function putFavStoriesOnPage() {
 
 function toggleStoryFav(evt) {
   let $favIcon = $(evt.target);
- console.log("fav star clicked!");
+  console.log("fav star clicked!");
   $favIcon.toggleClass("fas");
 
   let favStoryId = $favIcon.parent().attr("id");
 
   if ($favIcon.hasClass("fas")) {
     currentUser.addNewFavorite(currentUser.loginToken, currentUser.username, favStoryId);
+    
   }
   else {
     currentUser.deleteFavorite(currentUser.loginToken, currentUser.username, favStoryId);
   }
 }
 
-
-https://hack-or-snooze-v3.herokuapp.com/users/hueter/favorites/32d336da-98cd-4010-bb39-1d789b9bef50
+// https://hack-or-snooze-v3.herokuapp.com/users/hueter/favorites/32d336da-98cd-4010-bb39-1d789b9bef50
 
 $("#all-stories-list").on("click", ".fa-star", toggleStoryFav);
