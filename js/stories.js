@@ -22,6 +22,7 @@ function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup");
   let starFill = "";
   let deleteIcon = "";
+  let editIcon = "";
   const hostName = story.getHostName();
 
 
@@ -31,6 +32,7 @@ function generateStoryMarkup(story) {
 
   if (currentUser && currentUser.ownStories.some((obj) => obj.storyId === story.storyId) && currNavTab === "myStories") {
     deleteIcon = `<i class="fas fa-trash-alt"></i>`;
+    editIcon = `<i class="fas fa-edit"></i>`;
   };
 
 
@@ -43,8 +45,9 @@ function generateStoryMarkup(story) {
             </a>
             <small class="story-hostname">(${hostName})</small>
             <small class="story-author">by ${story.author}</small>
+            ${editIcon}
             <small class="story-user">posted by ${story.username}</small>
-      </li>
+            </li>
     `);
 }
 
@@ -137,19 +140,31 @@ function toggleStoryFav(evt) {
   }
 }
 
+$("#all-stories-list").on("click", ".fa-star", toggleStoryFav);
+
 function deleteStory(evt) {
   let $deleteIcon = $(evt.target);
   let storyId = $deleteIcon.parent().attr("id");
-
+  
   currentUser.deleteUserStory(storyId);
   currentUser.ownStories = currentUser.ownStories.filter((story) => story.storyId !== storyId);
   currentUser.favorites = currentUser.favorites.filter((story) => story.storyId !== storyId);
   storyList.stories = storyList.stories.filter((story) => story.storyId !== storyId);
-
+  
   putOwnStoriesOnPage();
 }
 
-$("#all-stories-list").on("click", ".fa-star", toggleStoryFav);
 $("#all-stories-list").on("click", ".fa-trash-alt", deleteStory);
 
-// https://hack-or-snooze-v3.herokuapp.com/users/hueter/favorites/32d336da-98cd-4010-bb39-1d789b9bef50
+function editStory(evt) {
+  const $editIcon = $(evt.target);
+  const story = $editIcon.parent();
+  const storyId = $editIcon.parent().attr("id");
+
+  const editStory = currentUser.ownStories.find((story)=> story.storyId === storyId);
+  storyList.editStory(currentUser, editStory)
+
+  
+}
+
+$("#all-stories-list").on("click", ".fa-edit", editStory);

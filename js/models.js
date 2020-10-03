@@ -96,6 +96,24 @@ class StoryList {
     user.ownStories.push(storyInstance);
     return storyInstance;
   }
+
+  async editStory(user, story) {
+    const response = await axios({
+      url: `${BASE_URL}/stories/${story.storyId}`,
+      method: "PATCH",
+      data: {
+        token: user.loginToken,
+        story: {
+          author: story.author,
+          title: "My Favorite Title",
+          url: story.url
+        }
+      }
+    });
+    console.log(response.data);
+
+    const updatedUserStory = response.data.story;
+  }
 }
 
 
